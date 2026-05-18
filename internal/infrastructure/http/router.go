@@ -63,12 +63,14 @@ func (r *Router) SetupRoutes(bookHandler *handler.BookHandler, authHandler *hand
 	r.echo.POST("/auth/token", authHandler.GenerateToken)
 
 	books := r.echo.Group("/books")
-
 	books.POST("", bookHandler.CreateBook)
-
 	books.GET("/:id", bookHandler.GetBook)
+	books.PUT("/:id", bookHandler.UpdateBook)
+	books.DELETE("/:id", bookHandler.DeleteBook)
 
-	books.GET("", func(c echo.Context) error {
+	booksProtected := books.Group("")
+	booksProtected.Use(r.auth.RequireAuth)
+	booksProtected.GET("", func(c echo.Context) error {
 		if c.QueryParam("author") != "" {
 			return bookHandler.GetBooksByAuthor(c)
 		}
@@ -77,11 +79,6 @@ func (r *Router) SetupRoutes(bookHandler *handler.BookHandler, authHandler *hand
 		}
 		return bookHandler.GetAllBooks(c)
 	})
-
-	booksProtected := books.Group("")
-	booksProtected.Use(r.auth.RequireAuth)
-	booksProtected.PUT("/:id", bookHandler.UpdateBook)
-	booksProtected.DELETE("/:id", bookHandler.DeleteBook)
 }
 
 func (r *Router) Run(port string) error {
