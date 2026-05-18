@@ -1,15 +1,15 @@
 package handler
 
 import (
-	"fmt"
-	"net/http"
-	"strconv"
 	"decent/internal/application/dto"
 	"decent/internal/domain/service"
 	"decent/internal/infrastructure/auth"
+	"fmt"
+	"net/http"
+	"strconv"
 
-	"github.com/labstack/echo/v4"
 	"github.com/go-playground/validator/v10"
+	"github.com/labstack/echo/v4"
 )
 
 type BookHandler struct {
@@ -98,17 +98,19 @@ func (h *BookHandler) GetBooksPaginated(c echo.Context) error {
 		}
 	}
 
-	books, total, err := h.bookService.GetBooksPaginated(page, limit)
+	books, _, err := h.bookService.GetBooksPaginated(page, limit)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"books": books,
-		"total": total,
-		"page":  page,
-		"limit": limit,
-	})
+	return c.JSON(http.StatusOK, books)
+
+	// return c.JSON(http.StatusOK, map[string]interface{}{
+	// 	"books": books,
+	// 	"total": total,
+	// 	"page":  page,
+	// 	"limit": limit,
+	// })
 }
 
 func (h *BookHandler) UpdateBook(c echo.Context) error {
