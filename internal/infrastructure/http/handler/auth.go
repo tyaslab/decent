@@ -12,17 +12,25 @@ type AuthHandler struct {
 	jwtService *auth.JWTService
 }
 
+type GenerateTokenRequestDto struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 func NewAuthHandler(jwtService *auth.JWTService) *AuthHandler {
 	return &AuthHandler{jwtService: jwtService}
 }
 
 func (h *AuthHandler) GenerateToken(c echo.Context) error {
-	// username := c.FormValue("username")
-	// password := c.FormValue("password")
+	var request GenerateTokenRequestDto
+	err := c.Bind(&request)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "username and password are required"})
+	}
 
-	// if username == "" || password == "" {
-	// 	return c.JSON(http.StatusBadRequest, map[string]string{"error": "username and password are required"})
-	// }
+	if request.Username != "admin" || request.Password != "password" {
+		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "invalid username or password"})
+	}
 
 	token, err := h.jwtService.GenerateToken(1)
 	if err != nil {
