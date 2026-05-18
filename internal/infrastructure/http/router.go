@@ -69,7 +69,7 @@ func (r *Router) SetupRoutes(bookHandler *handler.BookHandler, authHandler *hand
 	books.DELETE("/:id", bookHandler.DeleteBook)
 
 	booksProtected := books.Group("")
-	booksProtected.Use(r.auth.RequireAuth)
+	// booksProtected.Use(r.auth.RequireAuth)
 	booksProtected.GET("", func(c echo.Context) error {
 		if c.QueryParam("author") != "" {
 			return bookHandler.GetBooksByAuthor(c)
