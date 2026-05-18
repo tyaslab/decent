@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
 
 type BookHandler struct {
@@ -117,7 +118,7 @@ func (h *BookHandler) UpdateBook(c echo.Context) error {
 	id := c.Param("id")
 	var bookID uint
 	if _, err := fmt.Sscanf(id, "%d", &bookID); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid book ID"})
+		return c.JSON(http.StatusNotFound, map[string]string{"error": "book not found"})
 	}
 
 	var req dto.UpdateBookRequest
@@ -127,6 +128,15 @@ func (h *BookHandler) UpdateBook(c echo.Context) error {
 
 	if err := h.validator.Struct(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
+
+	_, err := h.bookService.GetBook(bookID)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return c.JSON(http.StatusNotFound, map[string]string{"error": "book not found"})
+		}
+
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
 	title := ""
