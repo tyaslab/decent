@@ -207,7 +207,7 @@ curl -X POST http://localhost:8080/books \
     "title": "The Great Gatsby",
     "author": "F. Scott Fitzgerald",
     "description": "A classic American novel",
-    "published_year": 1925
+    "year": 1925
   }'
 ```
 
@@ -257,7 +257,7 @@ curl -X DELETE http://localhost:8080/books/1 \
   "title": "The Great Gatsby",
   "author": "F. Scott Fitzgerald",
   "description": "A classic American novel",
-  "published_year": 1925,
+  "year": 1925,
   "created_at": "2026-05-18T13:21:00Z",
   "updated_at": "2026-05-18T13:21:00Z"
 }
@@ -267,7 +267,7 @@ curl -X DELETE http://localhost:8080/books/1 \
 - `title`: required, max 200 characters
 - `author`: required, max 100 characters
 - `description`: max 1000 characters
-- `published_year`: between 1000 and 9999
+- `year`: between 1000 and 9999
 
 ## Development
 
