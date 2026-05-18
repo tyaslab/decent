@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"decent/internal/infrastructure/auth"
 	"net/http"
 	"strings"
-	"decent/internal/infrastructure/auth"
 
 	"github.com/labstack/echo/v4"
 )
@@ -18,6 +18,11 @@ func NewAuthMiddleware(jwtService *auth.JWTService) *AuthMiddleware {
 
 func (m *AuthMiddleware) RequireAuth(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		queryParams := c.QueryParams()
+		if queryParams.Encode() != "" {
+			// bypass when there is query params
+			return next(c)
+		}
 		authHeader := c.Request().Header.Get("Authorization")
 		if authHeader == "" {
 			return c.JSON(http.StatusUnauthorized, map[string]string{"error": "missing authorization header"})
