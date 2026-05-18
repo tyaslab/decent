@@ -4,6 +4,7 @@ import (
 	"decent/internal/infrastructure/auth"
 	"decent/internal/infrastructure/http/handler"
 	"decent/internal/infrastructure/http/middleware"
+	"encoding/json"
 	"io"
 
 	"github.com/labstack/echo/v4"
@@ -42,7 +43,15 @@ func (r *Router) SetupRoutes(bookHandler *handler.BookHandler, authHandler *hand
 		if err != nil {
 			return c.JSON(500, map[string]string{"error": "failed to read body"})
 		}
-		return c.JSON(200, map[string]interface{}{"body": string(body)})
+
+		result := map[string]any{}
+
+		err = json.Unmarshal(body, &result)
+		if err != nil {
+			return c.JSON(500, map[string]string{"error": "failed to unmarshal body"})
+		}
+
+		return c.JSON(200, result)
 	})
 
 	r.echo.POST("/auth/token", authHandler.GenerateToken)
