@@ -44,6 +44,10 @@ func (r *Router) SetupRoutes(bookHandler *handler.BookHandler, authHandler *hand
 			return c.JSON(500, map[string]string{"error": "failed to read body"})
 		}
 
+		if len(body) == 0 {
+			body = []byte("{}")
+		}
+
 		result := map[string]any{}
 
 		err = json.Unmarshal(body, &result)
