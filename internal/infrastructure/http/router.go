@@ -1,10 +1,10 @@
 package http
 
 import (
-	"io"
 	"decent/internal/infrastructure/auth"
 	"decent/internal/infrastructure/http/handler"
 	"decent/internal/infrastructure/http/middleware"
+	"io"
 
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
@@ -34,7 +34,7 @@ func NewRouter(jwtService *auth.JWTService) *Router {
 
 func (r *Router) SetupRoutes(bookHandler *handler.BookHandler, authHandler *handler.AuthHandler) {
 	r.echo.GET("/ping", func(c echo.Context) error {
-		return c.JSON(200, map[string]string{"status": "ok"})
+		return c.JSON(200, map[string]any{"success": true})
 	})
 
 	r.echo.POST("/echo", func(c echo.Context) error {
