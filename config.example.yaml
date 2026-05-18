@@ -1,0 +1,17 @@
+# Example configuration file for the book service
+
+# Database configuration
+database:
+  host: localhost
+  port: "5432"
+  user: postgres
+  password: password
+  dbname: bookdb
+
+# Server configuration
+server:
+  port: "8080"
+
+# JWT configuration
+jwt:
+  secret: your-secret-key-here
