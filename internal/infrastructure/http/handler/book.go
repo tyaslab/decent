@@ -48,7 +48,7 @@ func (h *BookHandler) GetBook(c echo.Context) error {
 	id := c.Param("id")
 	var bookID uint
 	if _, err := fmt.Sscanf(id, "%d", &bookID); err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid book ID"})
+		return c.JSON(http.StatusNotFound, map[string]string{"error": "book not found"})
 	}
 
 	book, err := h.bookService.GetBook(bookID)
