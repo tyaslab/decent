@@ -6,6 +6,7 @@ import (
 	"decent/internal/infrastructure/http/middleware"
 	"encoding/json"
 	"io"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
@@ -20,7 +21,8 @@ type Router struct {
 func NewRouter(jwtService *auth.JWTService) *Router {
 	e := echo.New()
 
-	e.Use(echomiddleware.Logger())
+	loggingMiddleware := middleware.NewLoggingMiddleware()
+	e.Use(loggingMiddleware.Logger)
 	e.Use(echomiddleware.Recover())
 	e.Use(echomiddleware.CORS())
 
@@ -55,7 +57,7 @@ func (r *Router) SetupRoutes(bookHandler *handler.BookHandler, authHandler *hand
 			return c.JSON(500, map[string]string{"error": "failed to unmarshal body"})
 		}
 
-		return c.JSON(200, result)
+		return c.JSONBlob(http.StatusOK, body)
 	})
 
 	r.echo.POST("/auth/token", authHandler.GenerateToken)
